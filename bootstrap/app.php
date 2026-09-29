@@ -11,15 +11,17 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
-    })
-	->withMiddleware(function (Middleware $middleware) {
-    $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
+        // Percaya proxy Railway
+        $middleware->trustProxies(at: '*');
 
-    $middleware->alias([
-        'admin.auth' => \App\Http\Middleware\AdminAuth::class,
-    ]);
-})
+        // Security headers
+        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
+
+        // Alias middleware
+        $middleware->alias([
+            'admin.auth' => \App\Http\Middleware\AdminAuth::class,
+        ]);
+    })
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
